@@ -22,6 +22,7 @@ Please follow below steps to run both back-end and front-end side
 - Navigate to `client` folder from the project and run `npm install`
 - Then run `npm run start`. UI will start running on port number `3000`. Localhost URL is `http://localhost:3000/`
 - Run command `npm run test` to perform unit testing
+- To build front-end code (just in case back-end doesn't show fallback UI), run `npm run build`
 
 ## Feature flag
 This config file will allow developer to show/hide feature behind the flag which will be displayed based on business requirement.
