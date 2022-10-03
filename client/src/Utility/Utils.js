@@ -36,11 +36,17 @@ const getMonthsLabel = [
   "December",
 ];
 
+export const sortCustomerArrByDate = (arr) => {
+  return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+};
+
 export const formatCustomerTableData = (customerData = []) => {
   if (customerData.length === 0) return null;
-  let customerFormattedData = {};
 
-  customerData.forEach((customer) => {
+  let customerFormattedData = {};
+  const sortedCustomerData = sortCustomerArrByDate(customerData);
+
+  sortedCustomerData.forEach((customer, index) => {
     const { firstName, lastName, customerID, billAmount, date } = customer;
     const name = `${firstName} ${lastName}`;
     const rewardPoint = calculateCustomerPoint(billAmount);
@@ -52,22 +58,27 @@ export const formatCustomerTableData = (customerData = []) => {
     if (!customerFormattedData.hasOwnProperty(customerID)) {
       customerFormattedData[customerID] = {
         name,
-        dataSet: {},
-        totalRewardPoints: 0,
+        dataSet: [],
       };
     }
 
-    if (!customerFormattedData[customerID].dataSet.hasOwnProperty(dateKey)) {
-      customerFormattedData[customerID].dataSet[dateKey] = {
+    const existinDateIDIndex = customerFormattedData[
+      customerID
+    ].dataSet.findIndex((customer) => customer.dateID === dateKey);
+
+    if (existinDateIDIndex < 0) {
+      customerFormattedData[customerID].dataSet.push({
+        dateID: dateKey,
         date: `${monthLabel}, ${year}`,
         bill: 0,
         reward: 0,
-      };
+      });
     }
 
-    customerFormattedData[customerID].dataSet[dateKey].bill += billAmount;
-    customerFormattedData[customerID].dataSet[dateKey].reward += rewardPoint;
-    customerFormattedData[customerID].totalRewardPoints += rewardPoint;
+    const newIndex = customerFormattedData[customerID].dataSet.length - 1;
+
+    customerFormattedData[customerID].dataSet[newIndex].bill += billAmount;
+    customerFormattedData[customerID].dataSet[newIndex].reward += rewardPoint;
   });
 
   return customerFormattedData;

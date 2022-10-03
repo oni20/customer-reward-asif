@@ -12,6 +12,8 @@ import useSWR from "swr";
 import { getFetcher, formatCustomerTableData } from "../../Utility/Utils";
 import Spinner from "../Spinner/Spinner";
 import CustomerTable from "../CustomerTable/CustomerTable";
+import AlertMessage from "../AlertMessage/AlertMessage";
+import { FeatureFlag } from "../../Utility/FeatureFlag";
 
 const CustomerInfoContainer = ({
   customerName = "John Doe",
@@ -19,7 +21,7 @@ const CustomerInfoContainer = ({
   totalRewardPoints = 180,
 }) => {
   return (
-    <Grid item xs={6}>
+    <Grid item xs={12} sm={6}>
       <Paper elevation={3} sx={{ p: 2 }}>
         <Typography
           variant="h6"
@@ -28,11 +30,14 @@ const CustomerInfoContainer = ({
           paragraph
           sx={{ display: "flex", alignItems: "center" }}
         >
-          <PersonIcon sx={{ pt: 1 }} color="primary" fontSize="large" />
+          <PersonIcon color="primary" fontSize="large" />
           {customerName}
         </Typography>
 
-        <CustomerTable rows={rows} />
+        <CustomerTable
+          rows={rows}
+          tableCaption={`${customerName}'s table data with bill amount and reward points`}
+        />
 
         <Chip
           sx={{ mt: 2 }}
@@ -48,36 +53,42 @@ const CustomerInfoContainer = ({
 function CustomerInfo() {
   const { data, error } = useSWR("/customer", getFetcher);
 
-  if (error)
-    return (
-      <Typography variant="h6" align="left" color="text.secondary" paragraph>
-        Failed to load the data
-      </Typography>
-    );
+  // Show error message on UI level if
+  if (error) {
+    return <AlertMessage severity="error" message="Failed! to load data" />;
+  }
+
   if (!data) return <Spinner />;
 
   const formattedCustomerData = formatCustomerTableData(data.RetailData || []);
   if (!formattedCustomerData)
     return (
-      <Typography variant="h6" align="left" color="text.secondary" paragraph>
-        Error formatting data
-      </Typography>
+      <AlertMessage
+        severity="error"
+        message="Failed! to format data. Please check console"
+      />
     );
 
-  console.log(formattedCustomerData);
+  const { showNoOfLatestRecordForAllCustomer } = FeatureFlag;
 
   return (
     <Box sx={{ flexGrow: 1, pt: 6 }}>
       <Grid container spacing={2}>
         {Object.keys(formattedCustomerData).map((customer) => {
+          const tableRows = formattedCustomerData[customer]?.dataSet.slice(
+            0,
+            showNoOfLatestRecordForAllCustomer
+          );
+          const totalRewardPoints = tableRows.reduce(
+            (acc, obj) => acc + obj.reward,
+            0
+          );
           return (
             <CustomerInfoContainer
               key={customer}
               customerName={formattedCustomerData[customer]?.name}
-              rows={formattedCustomerData[customer]?.tableData}
-              totalRewardPoints={
-                formattedCustomerData[customer]?.totalRewardPoints
-              }
+              rows={tableRows}
+              totalRewardPoints={totalRewardPoints}
             />
           );
         })}

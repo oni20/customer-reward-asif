@@ -7,20 +7,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-export default function CustomerTable({ dataRows }) {
-  const rows = [
-    { month: "October", bill: 120, reward: 90 },
-    { month: "November", bill: 120, reward: 90 },
-    { month: "December", bill: 120, reward: 90 },
-  ];
-
+export default function CustomerTable({
+  rows,
+  tableCaption = "A basic table example with a caption",
+}) {
   return (
     <TableContainer component={Paper} sx={{ marginTop: "10px" }}>
       <Table aria-label="simple table">
-        <caption>A basic table example with a caption</caption>
+        <caption>{tableCaption}</caption>
         <TableHead>
           <TableRow>
-            <TableCell align="left">Month</TableCell>
+            <TableCell align="left">Date</TableCell>
             <TableCell align="right">Bill</TableCell>
             <TableCell align="right">Reward Points</TableCell>
           </TableRow>
@@ -31,7 +28,7 @@ export default function CustomerTable({ dataRows }) {
               key={`customerTable-${id}`}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell align="left">{row.month}</TableCell>
+              <TableCell align="left">{row.date}</TableCell>
               <TableCell align="right">{row.bill}</TableCell>
               <TableCell align="right">{row.reward}</TableCell>
             </TableRow>
