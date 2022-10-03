@@ -9,8 +9,6 @@ import NavBar from "./components/NavBar/NavBar";
 import CustomerInfo from "./components/CustomerInfo/CustomerInfo";
 import Footer from "./components/Footer/Footer";
 
-import "./App.css";
-
 function App() {
   const theme = createTheme();
 

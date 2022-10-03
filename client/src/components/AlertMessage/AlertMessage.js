@@ -12,7 +12,7 @@ export default function AlertMessage({ severity = "success", message }) {
     }[severity] || "Success";
 
   return (
-    <Alert severity={severity}>
+    <Alert severity={severity} data-testid="alertMessage">
       <AlertTitle>{title}</AlertTitle>
       <strong>{message}</strong>
     </Alert>

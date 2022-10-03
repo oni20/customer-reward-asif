@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
@@ -17,7 +17,11 @@ export default function Footer() {
     );
   };
   return (
-    <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
+    <Box
+      sx={{ bgcolor: "background.paper", p: 6 }}
+      component="footer"
+      data-testid="footer"
+    >
       <Typography variant="h6" align="center" gutterBottom>
         Customer Reward Program
       </Typography>
